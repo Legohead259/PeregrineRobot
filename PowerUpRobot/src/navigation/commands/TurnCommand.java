@@ -4,12 +4,14 @@ import subsystems.DriveTrain;
 
 public class TurnCommand extends Command {
 	double angle;
+	DriveTrain driveTrain;
 	
-	public TurnCommand(double a) {
+	public TurnCommand(double a, DriveTrain dt) {
 		angle = a;
+		driveTrain = dt;
 	}
 	
 	public void execute() {
-		DriveTrain.turnTo(angle);
+		driveTrain.turnTo(angle);
 	}
 }
