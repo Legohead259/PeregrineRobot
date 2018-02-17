@@ -12,17 +12,24 @@ import util.MiniPID;
 import util.Utility;
 
 public class Shooter {
+	//Sensors
 	DigitalInput photosensor = new DigitalInput(0);
+	
+	//Motor Speed/Power Variables
 	final double SCALE_POWER = .42;
 	public final double SCALE_SPEED = 32000;
 	final double SWITCH_POWER = .25;
-	public final double SWITCH_SPEED = 1111; //TODO: Verify
-	public final double INTAKE_SPEED = .5;
-	boolean up = false;
+	public final double SWITCH_SPEED = 19000; //TODO: Verify
+	public final double INTAKE_POWER = .5;
 	public boolean spunUp = false;
-	DoubleSolenoid piston = new DoubleSolenoid(2, 3);
+	
+	//Motor PID Variables
 	double p = 0.000175, i = 0.00001, d = 0.0;
 	MiniPID pid = new MiniPID(p, i, d);
+	
+	//Piston Variables
+	boolean up = false;
+	DoubleSolenoid piston = new DoubleSolenoid(2, 3);
 	
 	public Shooter() {
 		Motors.shooterBackLeft.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0,Motors.TIMEOUT);
@@ -31,7 +38,7 @@ public class Shooter {
 	}
 	
 	
-	//=====OPERATOR METHODS=====
+	//=====OPERATION METHODS=====
 	
 	
 	/**
@@ -42,6 +49,15 @@ public class Shooter {
 		speed *= 1; //Use this to set soft motor speed limits
 		Motors.intakeLeft.set(ControlMode.PercentOutput, speed);
 		Motors.intakeRight.set(ControlMode.PercentOutput, -speed);
+	}
+	
+	public void shoot(double target) {
+		if (!spunUp) { //Spin up motors to desired speed
+			spinUp(target);
+		}
+		else { //Push box into shooter when spun-up
+			intake(1);
+		}
 	}
 	
 	/**

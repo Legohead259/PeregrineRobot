@@ -17,7 +17,7 @@ public class Driver {
 	
 	
 	/**
-	 * Wrapper for operating tank drive and integrating shifting gearbox
+	 * Wrapper for operating tank drive and shifting gearbox
 	 */
 	public void drive() {
 		driveTrain.drive(joy.getRawAxis(ControllerMap.LEFT_STICK), joy.getRawAxis(ControllerMap.RIGHT_STICK));
