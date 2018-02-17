@@ -13,12 +13,13 @@ import util.Utility;
 
 public class Shooter {
 	DigitalInput photosensor = new DigitalInput(0);
-	double scalePower = .42; //TODO: Verify
-	double switchPower = .25; //TODO: Verify
-	double scaleSpeed = 32000; //TODO: Verify
-	double switchSpeed = 1111; //TODO: Verify
+	final double SCALE_POWER = .42;
+	public final double SCALE_SPEED = 32000;
+	final double SWITCH_POWER = .25;
+	public final double SWITCH_SPEED = 1111; //TODO: Verify
+	public final double INTAKE_SPEED = .5;
 	boolean up = false;
-	boolean spunUp = false;
+	public boolean spunUp = false;
 	DoubleSolenoid piston = new DoubleSolenoid(2, 3);
 	double p = 0.000175, i = 0.00001, d = 0.0;
 	MiniPID pid = new MiniPID(p, i, d);
@@ -44,10 +45,10 @@ public class Shooter {
 	}
 	
 	/**
-	 * Shoots the box at a given target
+	 * Spins up the box to a certain speed
 	 * @param target: the speed for shooting the box at
 	 */
-	public void shoot(double target) {
+	public void spinUp(double target) {
 		double curSpeed;
 		try {
 			curSpeed = Motors.shooterBackLeft.getSelectedSensorVelocity(0);
@@ -59,7 +60,7 @@ public class Shooter {
 		
 		pid.setSetpoint(target);
 		double speed = pid.getOutput(curSpeed);
-		spinUp(speed);
+		setShooters(speed);
 		checkSpinUp(target, curSpeed);
 	}
 	
@@ -100,7 +101,7 @@ public class Shooter {
 	 * Spins the motors up to a certain speed
 	 * @param speed: speed of the shooter motors
 	 */
-	 private void spinUp(double speed) {
+	 public void setShooters(double speed) {
 		speed *= 1; //Use this to set soft motor speed limits
 		Motors.shooterFrontLeft.set(ControlMode.PercentOutput, speed);
 		Motors.shooterFrontRight.set(ControlMode.PercentOutput, -speed);
@@ -123,5 +124,13 @@ public class Shooter {
 		else {
 			spunUp = false;
 		}
+	}
+	
+	/**
+	 * Wrapper for returning the status of the box sensor
+	 * @return: if box sensor is triggered
+	 */
+	public boolean getBoxPos() {
+		return photosensor.get();
 	}
 }
